@@ -1,0 +1,16 @@
+table.field {
+  border-collapse: separate;
+  border-spacing: 2px;
+  text-align: center;
+  margin: auto;
+  td {
+    width: 70px;
+    height: 70px;
+    border: 1px solid #dedede;
+    a {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
