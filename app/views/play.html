@@ -10,7 +10,7 @@
 <div class="row">
     <table class="field">
         <tr ng-repeat="row in field">
-            <td ng-repeat="bucket in row track by $index"><a ng-click="addCoin($index)">{{bucket}}</a></td>
+            <td ng-repeat="bucket in row track by $index"><a ng-click="addCoin($index)" class="circle player_{{bucket}}"></a></td>
         </tr>
     </table>
     <br>
