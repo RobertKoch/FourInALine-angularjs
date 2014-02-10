@@ -32,11 +32,19 @@ angular.module('fourInAlineApp')
         for(var i = ($scope.field.length-1); i >= 0; i--) {
           if($scope.field[i][col] === 0) {
             $scope.field[i][col] = $scope.players[$scope.playerRound];
+
+            //use the last position to check hasWon faster
+            if($scope.playerHasWon(col, i))
+            {
+              console.log("Player " + $scope.playerRound + "has won");
+              alert('Game Over' + "Player " + $scope.playerRound + " won!");
+            }
+
             break;
           }
         }
 
-        $scope.playerHasWon();
+        //$scope.playerHasWon();
         $scope.changePlayer();
       }
       else
@@ -46,8 +54,14 @@ angular.module('fourInAlineApp')
       }
     };
 
-    $scope.playerHasWon = function() {
+    $scope.playerHasWon = function(x, y) {
        //TODO: check if current player has won
+       console.log("Check HasWon for position " + x + " " + y);
+       var hasWon = false;
+
+       //check horizontal line
+
+
     };
 
     $scope.changePlayer = function() {
