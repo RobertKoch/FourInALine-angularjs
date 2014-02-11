@@ -18,8 +18,15 @@ table.field {
 
 .circle {
   width: 60px;
-  height: 60x;
+  height: 60px;
   border-radius: 50%;
+}
+
+.circle_small {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin: 0 2px 2px 0;
 }
 
 .player_X {
@@ -31,5 +38,19 @@ table.field {
 }
 
 .well {
+  text-align: center;
+}
+
+.fl_left {
+  float: left;
+}
+
+.clear {
+  clear: both;
+}
+
+.centered {
+  width: 150px;
+  margin: auto;
   text-align: center;
 }
