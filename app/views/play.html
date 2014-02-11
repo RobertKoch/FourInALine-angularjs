@@ -9,8 +9,12 @@
 
 <div class="row">
     <table class="field">
+        <tr class="header">
+            <td ng-repeat="headtd in [0,1,2,3,4,5,6,7]" class="no-border circle headtd_{{headtd}}">
+            </td>
+        </tr>
         <tr ng-repeat="row in field">
-            <td ng-repeat="bucket in row track by $index"><a ng-click="addCoin($index)" class="circle player_{{bucket}}"></a></td>
+            <td ng-repeat="bucket in row track by $index" ng-mouseover="moveCursor($index)"><a ng-click="addCoin($index)" class="circle player_{{bucket}}"></a></td>
         </tr>
     </table>
     <br>

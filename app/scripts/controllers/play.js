@@ -24,6 +24,10 @@ angular.module('fourInAlineApp')
     //add coin if col is not full, check if game is over
     $scope.addCoin = function(col) {
       console.log('Player '+ $scope.playerRound +' clicked: '+ col);
+
+      //remove cursor
+      $('tr.header td').removeClass('player_X player_O');
+
       if($scope.colCount[col] < 8)
       {
         $scope.colCount[col] += 1;
@@ -73,5 +77,10 @@ angular.module('fourInAlineApp')
       {
         $scope.playerRound = 0;
       }
+    };
+
+    $scope.moveCursor = function(col) {
+      $('tr.header td').removeClass('player_X player_O');
+      $('td.headtd_'+col).addClass('player_'+$scope.players[$scope.playerRound]);
     };
   });
