@@ -26,9 +26,6 @@ angular.module('fourInAlineApp')
     $scope.addCoin = function(col) {
       console.log('Player '+ $scope.playerRound +' clicked: '+ col);
 
-      //remove cursor
-      $('tr.header td').removeClass('player_X player_O');
-
       if($scope.interactionAllowed && $scope.colCount[col] < 8)
       {
         $scope.colCount[col] += 1;
@@ -50,8 +47,9 @@ angular.module('fourInAlineApp')
           }
         }
 
-        //$scope.playerHasWon();
+        //change player and cursor color
         $scope.changePlayer();
+        $scope.moveCursor(col);
       }
       else
       {
