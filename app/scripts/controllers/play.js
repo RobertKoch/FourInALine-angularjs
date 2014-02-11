@@ -20,6 +20,7 @@ angular.module('fourInAlineApp')
     //player signs and round
     $scope.players = ['X', 'O'];
     $scope.playerRound = 0;
+    $scope.interactionAllowed = true;
 
     //add coin if col is not full, check if game is over
     $scope.addCoin = function(col) {
@@ -28,7 +29,7 @@ angular.module('fourInAlineApp')
       //remove cursor
       $('tr.header td').removeClass('player_X player_O');
 
-      if($scope.colCount[col] < 8)
+      if($scope.interactionAllowed && $scope.colCount[col] < 8)
       {
         $scope.colCount[col] += 1;
 
@@ -40,6 +41,7 @@ angular.module('fourInAlineApp')
             //use the last position to check hasWon faster
             if($scope.playerHasWon(col, i))
             {
+              $scope.interactionAllowed = false;
               console.log("Player " + $scope.playerRound + "has won");
               alert('Game Over' + "Player " + $scope.playerRound + " won!");
             }
@@ -54,33 +56,80 @@ angular.module('fourInAlineApp')
       else
       {
         //column if full!
-        console.log('Column is full!!');
+        console.log('Column is full or game is over!!');
       }
     };
 
     $scope.playerHasWon = function(x, y) {
-       //TODO: check if current player has won
-       console.log("Check HasWon for position " + x + " " + y);
-       var hasWon = false;
+      //TODO: check if current player has won
+      console.log("Check HasWon for position " + x + " " + y);
+      var player = $scope.players[$scope.playerRound];
+      var actual = $scope.field;
+      var goodCoins = [];
+      var hasWon = false;
 
-       //check horizontal line
+      //check horizontal line => field[y]
+      function checkHorizontal() {
+        goodCoins.length = 0;
+        for(var i = 0; i < 7; i++)
+        {
+          if(actual[y][i] === player && actual[y][i] === actual[y][i+1])
+          {
+            //push xy-pairs to array
+            goodCoins.push(i+","+y);
 
+            //matching pairs, adding last coin if it fits
+            if(goodCoins.length === 3)
+              goodCoins.push((i+1)+","+y);
+          }
+        }
 
+        if(goodCoins.length === 4)
+          return true;
+        else
+          return false;
+      };
+
+      //check vertical line -> field[x][0..7]
+      function checkVertical() {
+        goodCoins.length = 0;
+        for(var i = 7; i > 0; i--)
+        {
+          if(actual[i][x] === player && actual[i][x] === actual[i-1][x])
+          {
+            goodCoins.push(x+","+i);
+
+            //matching pairs, adding last coin if it fits
+            if(goodCoins.length === 3)
+              goodCoins.push(x+","+(i-1));
+          }
+        }
+
+        if(goodCoins.length === 4)
+          return true;
+        else
+          return false;
+      };
+
+      if(checkHorizontal())
+        hasWon = true;
+      if(checkVertical())
+        hasWon = true;
+
+      return hasWon;
     };
 
     $scope.changePlayer = function() {
       if($scope.playerRound === 0)
-      {
         $scope.playerRound = 1;
-      }
       else
-      {
         $scope.playerRound = 0;
-      }
     };
 
     $scope.moveCursor = function(col) {
-      $('tr.header td').removeClass('player_X player_O');
-      $('td.headtd_'+col).addClass('player_'+$scope.players[$scope.playerRound]);
+      if($scope.interactionAllowed) {
+        $('tr.header td').removeClass('player_X player_O');
+        $('td.headtd_'+col).addClass('player_'+$scope.players[$scope.playerRound]);
+      }
     };
   });
