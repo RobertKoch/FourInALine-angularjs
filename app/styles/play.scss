@@ -1,3 +1,5 @@
+@import 'compass';
+
 table.field {
   border-collapse: separate;
   border-spacing: 2px;
@@ -20,8 +22,8 @@ table.field {
 
 
 .circle {
-  width: 60px;
-  height: 60px;
+  width: 55px;
+  height: 55px;
   border-radius: 50%;
 }
 
@@ -33,7 +35,7 @@ table.field {
 }
 
 .player_X {
-  background-color: #006699;
+  background-color: #ffb600;
 }
 
 .player_O {
