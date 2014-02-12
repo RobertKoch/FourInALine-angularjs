@@ -3,7 +3,31 @@
 angular.module('fourInAlineApp')
   .controller('PlayCtrl', function ($scope) {
     //represents the playing field
+    /*
     $scope.field = [
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,'X','O',0,0,0],
+      [0,0,'X','X','X',0,0,0],
+      [0,'X','O','O','O',0,0,'O']
+    ];*/
+
+    $scope.field = [
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,0,'X','X',0,0],
+      [0,0,0,0,'O','X','X',0],
+      [0,0,0,'O','O','O','O','X']
+    ];
+
+
+    /*$scope.field = [
       [0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0],
@@ -12,7 +36,7 @@ angular.module('fourInAlineApp')
       [0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0]
-    ];
+    ];*/
 
     //counter for (full) columns
     $scope.colCount = [0,0,0,0,0,0,0,0];
@@ -24,7 +48,6 @@ angular.module('fourInAlineApp')
 
     //add coin if col is not full, check if game is over
     $scope.addCoin = function(col) {
-      console.log('Player '+ $scope.playerRound +' clicked: '+ col);
 
       if($scope.interactionAllowed && $scope.colCount[col] < 8)
       {
@@ -39,8 +62,8 @@ angular.module('fourInAlineApp')
             if($scope.playerHasWon(col, i))
             {
               $scope.interactionAllowed = false;
-              console.log("Player " + $scope.playerRound + "has won");
-              alert('Game Over' + "Player " + $scope.playerRound + " won!");
+              //console.log("Player " + $scope.playerRound + "has won");
+              alert('Game Over ' + "Player " + $scope.playerRound + " won!");
             }
 
             break;
@@ -59,18 +82,32 @@ angular.module('fourInAlineApp')
     };
 
     $scope.playerHasWon = function(x, y) {
-      //TODO: check if current player has won
-      console.log("Check HasWon for position " + x + " " + y);
+
       var player = $scope.players[$scope.playerRound];
       var actual = $scope.field;
       var goodCoins = [];
       var hasWon = false;
 
-      //check horizontal line => field[y]
+      //check horizontal line
       function checkHorizontal() {
+
         goodCoins.length = 0;
-        for(var i = 0; i < 7; i++)
+        
+        //its not necessary to iterate through the whole line
+        var xStart = x-3;
+        var xEnd = x+3;
+
+        if(xStart < 0) xStart = 0;
+        if(xEnd > 7) xEnd = 7;
+
+        //console.log("start Horizontal!!!!");
+        
+        for(var i = xStart; i < xEnd; i++)
         {
+
+          //console.log("Horizontal: " + i + " " + y);
+          //console.log(actual[y][i] + " " + actual[y][i+1] + " currentPlayer: " + player);
+
           if(actual[y][i] === player && actual[y][i] === actual[y][i+1])
           {
             //push xy-pairs to array
@@ -78,7 +115,10 @@ angular.module('fourInAlineApp')
 
             //matching pairs, adding last coin if it fits
             if(goodCoins.length === 3)
+            {
               goodCoins.push((i+1)+","+y);
+              break;
+            }
           }
         }
 
@@ -88,18 +128,35 @@ angular.module('fourInAlineApp')
           return false;
       };
 
-      //check vertical line -> field[x][0..7]
+      //check vertical line
       function checkVertical() {
+
         goodCoins.length = 0;
-        for(var i = 7; i > 0; i--)
+
+        //its not necessary to iterate through the whole line
+        var yStart = y - 3;
+        var yEnd = y + 3;
+
+        if(yStart < 0) yStart = 0;
+        if(yEnd > 7) yEnd = 7;
+        
+        //console.log("Start Vertical!!!!!!");
+
+        for(var i = yEnd; i > yStart; i--)
         {
+          //console.log("Vertical: " + i + " " + x);
+          //console.log(actual[i][x] + " " + actual[i-1][x] + " currentPlayer: " + player);
+
           if(actual[i][x] === player && actual[i][x] === actual[i-1][x])
           {
             goodCoins.push(x+","+i);
 
             //matching pairs, adding last coin if it fits
             if(goodCoins.length === 3)
+            {
               goodCoins.push(x+","+(i-1));
+              break;
+            }
           }
         }
 
@@ -109,9 +166,100 @@ angular.module('fourInAlineApp')
           return false;
       };
 
+      function checkDiagonal() {
+
+        //its not necessary to iterate through the whole line
+        var xStart = x-3;
+        var yStart = y-3;
+        var xEnd = x+3;
+        var yEnd = x+3;
+
+        /*while(xStart < 0 || yStart < 0)
+        {
+          xStart++;
+          yStart++;
+        }
+
+        while(xEnd > 7 || yEnd > 7)
+        {
+          xEnd--;
+          yEnd--;
+        }*/
+  
+        //check first diagonal -> \
+        var currentY = yStart;
+        goodCoins.length = 0;
+
+        console.log("Start \\\\");
+
+        for(var i = xStart; i < xEnd; i++)
+        {
+          if(currentY >= 0 && currentY < 7 && i >= 0 && i < 7)
+          {
+            console.log("Diagonal\: " + i + " " + currentY);
+            //console.log(actual[currentY][i] + " " + actual[currentY+1][i+1] + " currentPlayer: " + player);
+
+            if(actual[currentY][i] === player && actual[currentY][i] === actual[currentY+1][i+1])
+            {
+              goodCoins.push(i+","+currentY);
+              console.log("Push: " + i+","+currentY)
+
+              //matching pairs, adding last coin if it fits
+              if(goodCoins.length === 3)
+              {
+                goodCoins.push(i+1+","+(currentY+1));
+                console.log("Push: " + (i+1)+","+(currentY+1));
+                //break;
+              }
+            }
+          }
+
+          currentY++;
+        }
+
+        if(goodCoins.length === 4)
+          return true;
+
+        //check second diagonal -> /
+        /*currentY = yEnd;
+        goodCoins.lenght = 0;
+
+        console.log("Start ////////");
+        console.log(actual);
+
+        for(var i = xStart; i < xEnd; i++)
+        {
+          console.log("Diagonal/: " + i + " " + currentY);
+          console.log(actual[i][currentY] + " " + actual[i+1][currentY-1] + " currentPlayer: " + player);
+
+          if(actual[currentY][i] === player && actual[currentY][i] === actual[currentY-1][i+1])
+          {
+            goodCoins.push(i+","+currentY);
+
+            //matching pairs, adding last coin if it fits
+            if(goodCoins.length === 3)
+            {
+              goodCoins.push(i+1 + "," + (currentY-1));
+              break;
+            }
+          }
+
+          currentY--;
+        }
+
+        if(goodCoins.length === 4)
+          return true;
+        */
+       
+       return false;
+
+      };
+
       if(checkHorizontal())
         hasWon = true;
       if(checkVertical())
+        hasWon = true;
+      if(checkDiagonal())
         hasWon = true;
 
       return hasWon;
