@@ -3,30 +3,6 @@
 angular.module('fourInAlineApp')
   .controller('PlayCtrl', function ($scope, $window) {
     //represents the playing field
-    /*
-    $scope.field = [
-      [0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0],
-      [0,0,0,'X','O',0,0,0],
-      [0,0,'X','X','X',0,0,0],
-      [0,'X','O','O','O',0,0,'O']
-    ];*/
-
-    /*$scope.field = [
-      [0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0],
-      [0,0,0,0,'X','X',0,0],
-      [0,0,0,0,'O','X','X',0],
-      [0,0,0,'O','O','O','O','X']
-    ];*/
-
-
     $scope.field = [
       [0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0],
@@ -72,15 +48,10 @@ angular.module('fourInAlineApp')
         $scope.changePlayer();
         $scope.moveCursor(col);
       }
-      else
-      {
-        //column if full!
-        console.log('Column is full or game is over!!');
-      }
+      //no else for if: do nothing when column is full or game is over
     };
 
     $scope.gameOver = function() {
-      
       //hide cursors, show winning-field
       $('tr.header, .player-round').hide();
       $('.won span.player').text($scope.playerRound+1);
@@ -106,8 +77,6 @@ angular.module('fourInAlineApp')
         if(xStart < 0) xStart = 0;
         if(xEnd > 7) xEnd = 7;
 
-        //console.log("start Horizontal!!!!");
-        
         for(var i = xStart; i < xEnd; i++)
         {
 
@@ -117,22 +86,24 @@ angular.module('fourInAlineApp')
           if(actual[y][i] === player && actual[y][i] === actual[y][i+1])
           {
             //push xy-pairs to array
-            goodCoins.push(i+","+y);
+            goodCoins.push(i+','+y);
 
             //matching pairs, adding last coin if it fits
             if(goodCoins.length === 3)
             {
-              goodCoins.push((i+1)+","+y);
+              goodCoins.push((i+1)+','+y);
               break;
             }
           }
         }
 
-        if(goodCoins.length === 4)
+        if(goodCoins.length === 4) {
+          $scope.highlightWinningLine(goodCoins);
           return true;
+        }
         else
           return false;
-      };
+      }
 
       //check vertical line
       function checkVertical() {
@@ -146,31 +117,28 @@ angular.module('fourInAlineApp')
         if(yStart < 0) yStart = 0;
         if(yEnd > 7) yEnd = 7;
         
-        //console.log("Start Vertical!!!!!!");
-
         for(var i = yEnd; i > yStart; i--)
         {
-          //console.log("Vertical: " + i + " " + x);
-          //console.log(actual[i][x] + " " + actual[i-1][x] + " currentPlayer: " + player);
-
           if(actual[i][x] === player && actual[i][x] === actual[i-1][x])
           {
-            goodCoins.push(x+","+i);
+            goodCoins.push(x+','+i);
 
             //matching pairs, adding last coin if it fits
             if(goodCoins.length === 3)
             {
-              goodCoins.push(x+","+(i-1));
+              goodCoins.push(x+','+(i-1));
               break;
             }
           }
         }
 
-        if(goodCoins.length === 4)
+        if(goodCoins.length === 4) {
+          $scope.highlightWinningLine(goodCoins);
           return true;
+        }
         else
           return false;
-      };
+      }
 
       function checkDiagonal() {
 
@@ -190,12 +158,12 @@ angular.module('fourInAlineApp')
           {
             if(actual[currentY][i] === player && actual[currentY][i] === actual[currentY+1][i+1])
             {
-              goodCoins.push(i+","+currentY);
+              goodCoins.push(i+','+currentY);
 
               //matching pairs, adding last coin if it fits
               if(goodCoins.length === 3)
               {
-                goodCoins.push((i+1)+","+(currentY+1));
+                goodCoins.push((i+1)+','+(currentY+1));
                 break;
               }
             }
@@ -205,6 +173,7 @@ angular.module('fourInAlineApp')
 
         if(goodCoins.length === 4)
         {
+          $scope.highlightWinningLine(goodCoins);
           return true;
         }
 
@@ -218,12 +187,12 @@ angular.module('fourInAlineApp')
           {
             if(actual[currentY][i] === player && actual[currentY][i] === actual[currentY-1][i+1])
             {
-              goodCoins.push(i+","+currentY);
+              goodCoins.push(i+','+currentY);
 
               //matching pairs, adding last coin if it fits
               if(goodCoins.length === 3)
               {
-                goodCoins.push((i+1) + "," + (currentY-1));
+                goodCoins.push((i+1) + ',' + (currentY-1));
                 break;
               }
             }
@@ -233,12 +202,13 @@ angular.module('fourInAlineApp')
 
         if(goodCoins.length === 4)
         {
+          $scope.highlightWinningLine(goodCoins);
           return true;
         }
        
-       return false;
+        return false;
 
-      };
+      }
 
       if(checkHorizontal())
         hasWon = true;
@@ -250,6 +220,13 @@ angular.module('fourInAlineApp')
         hasWon = true;
 
       return hasWon;
+    };
+
+    $scope.highlightWinningLine = function(coins) {
+      coins.forEach(function(coin) {
+        var coords = coin.split(',');
+        $('.field tr').eq(parseInt(coords[1])+1).find('td').eq(parseInt(coords[0])).find('.circle').addClass('winning-coin');
+      });
     };
 
     $scope.changePlayer = function() {
@@ -268,5 +245,5 @@ angular.module('fourInAlineApp')
 
     $scope.reload = function() {
       $window.location.reload();
-    }
+    };
   });
