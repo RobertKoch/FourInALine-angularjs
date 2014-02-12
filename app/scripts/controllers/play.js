@@ -15,7 +15,7 @@ angular.module('fourInAlineApp')
       [0,'X','O','O','O',0,0,'O']
     ];*/
 
-    $scope.field = [
+    /*$scope.field = [
       [0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0],
@@ -24,10 +24,10 @@ angular.module('fourInAlineApp')
       [0,0,0,0,'X','X',0,0],
       [0,0,0,0,'O','X','X',0],
       [0,0,0,'O','O','O','O','X']
-    ];
+    ];*/
 
 
-    /*$scope.field = [
+    $scope.field = [
       [0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0],
@@ -36,7 +36,7 @@ angular.module('fourInAlineApp')
       [0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0]
-    ];*/
+    ];
 
     //counter for (full) columns
     $scope.colCount = [0,0,0,0,0,0,0,0];
@@ -61,7 +61,6 @@ angular.module('fourInAlineApp')
             //use the last position to check hasWon faster
             if($scope.playerHasWon(col, i))
             {
-              
               $scope.interactionAllowed = false;
               $scope.gameOver();
             }
@@ -81,8 +80,8 @@ angular.module('fourInAlineApp')
     };
 
     $scope.gameOver = function() {
+      
       //hide cursors, show winning-field
-      console.log('gameOver() called');
       $('tr.header, .player-round').hide();
       $('.won span.player').text($scope.playerRound+1);
       $('.won').fadeIn();
@@ -179,84 +178,63 @@ angular.module('fourInAlineApp')
         var xStart = x-3;
         var yStart = y-3;
         var xEnd = x+3;
-        var yEnd = x+3;
-
-        /*while(xStart < 0 || yStart < 0)
-        {
-          xStart++;
-          yStart++;
-        }
-
-        while(xEnd > 7 || yEnd > 7)
-        {
-          xEnd--;
-          yEnd--;
-        }*/
+        var yEnd = y+3;
   
         //check first diagonal -> \
         var currentY = yStart;
         goodCoins.length = 0;
 
-        console.log("Start \\\\");
-
         for(var i = xStart; i < xEnd; i++)
         {
           if(currentY >= 0 && currentY < 7 && i >= 0 && i < 7)
           {
-            console.log("Diagonal\: " + i + " " + currentY);
-            //console.log(actual[currentY][i] + " " + actual[currentY+1][i+1] + " currentPlayer: " + player);
-
             if(actual[currentY][i] === player && actual[currentY][i] === actual[currentY+1][i+1])
             {
               goodCoins.push(i+","+currentY);
-              console.log("Push: " + i+","+currentY)
 
               //matching pairs, adding last coin if it fits
               if(goodCoins.length === 3)
               {
-                goodCoins.push(i+1+","+(currentY+1));
-                console.log("Push: " + (i+1)+","+(currentY+1));
-                //break;
+                goodCoins.push((i+1)+","+(currentY+1));
+                break;
               }
             }
           }
-
           currentY++;
         }
 
         if(goodCoins.length === 4)
+        {
           return true;
+        }
 
         //check second diagonal -> /
-        /*currentY = yEnd;
-        goodCoins.lenght = 0;
-
-        console.log("Start ////////");
-        console.log(actual);
+        currentY = yEnd;
+        goodCoins.length = 0;
 
         for(var i = xStart; i < xEnd; i++)
         {
-          console.log("Diagonal/: " + i + " " + currentY);
-          console.log(actual[i][currentY] + " " + actual[i+1][currentY-1] + " currentPlayer: " + player);
-
-          if(actual[currentY][i] === player && actual[currentY][i] === actual[currentY-1][i+1])
+          if(currentY > 0 && currentY <= 7 && i >= 0 && i < 7)
           {
-            goodCoins.push(i+","+currentY);
-
-            //matching pairs, adding last coin if it fits
-            if(goodCoins.length === 3)
+            if(actual[currentY][i] === player && actual[currentY][i] === actual[currentY-1][i+1])
             {
-              goodCoins.push(i+1 + "," + (currentY-1));
-              break;
+              goodCoins.push(i+","+currentY);
+
+              //matching pairs, adding last coin if it fits
+              if(goodCoins.length === 3)
+              {
+                goodCoins.push((i+1) + "," + (currentY-1));
+                break;
+              }
             }
           }
-
           currentY--;
         }
 
         if(goodCoins.length === 4)
+        {
           return true;
-        */
+        }
        
        return false;
 
@@ -264,8 +242,10 @@ angular.module('fourInAlineApp')
 
       if(checkHorizontal())
         hasWon = true;
+
       if(checkVertical())
         hasWon = true;
+
       if(checkDiagonal())
         hasWon = true;
 
