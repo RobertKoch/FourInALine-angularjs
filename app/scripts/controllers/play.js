@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('fourInAlineApp')
-  .controller('PlayCtrl', function ($scope) {
+  .controller('PlayCtrl', function ($scope, $window) {
     //represents the playing field
     $scope.field = [
       [0,0,0,0,0,0,0,0],
@@ -40,13 +40,13 @@ angular.module('fourInAlineApp')
             {
               $scope.interactionAllowed = false;
               console.log("Player " + $scope.playerRound + "has won");
-              alert('Game Over' + "Player " + $scope.playerRound + " won!");
+              //alert('Game Over' + "Player " + $scope.playerRound + " won!");
+              $scope.gameOver();
             }
 
             break;
           }
         }
-
         //change player and cursor color
         $scope.changePlayer();
         $scope.moveCursor(col);
@@ -56,6 +56,14 @@ angular.module('fourInAlineApp')
         //column if full!
         console.log('Column is full or game is over!!');
       }
+    };
+
+    $scope.gameOver = function() {
+      //hide cursors, show winning-field
+      console.log('gameOver() called');
+      $('tr.header, .player-round').hide();
+      $('.won span.player').text($scope.playerRound+1);
+      $('.won').fadeIn();
     };
 
     $scope.playerHasWon = function(x, y) {
@@ -130,4 +138,8 @@ angular.module('fourInAlineApp')
         $('td.headtd_'+col).addClass('player_'+$scope.players[$scope.playerRound]);
       }
     };
+
+    $scope.reload = function() {
+      $window.location.reload();
+    }
   });
